@@ -65,10 +65,9 @@ namespace :paperclip do
       names.each do |name|
         Paperclip.each_instance_with_attachment(klass, name) do |instance|
           if file = Paperclip.io_adapters.for(instance.send(name))
-            instance.send("#{name}_file_name=", instance.send("#{name}_file_name").strip)
-            instance.send("#{name}_content_type=", file.content_type.to_s.strip)
-            instance.send("#{name}_file_size=", file.size) if instance.respond_to?("#{name}_file_size")
-            instance.save(:validate => false)
+            instance.update_column("#{name}_file_name", instance.send("#{name}_file_name").strip)
+            instance.update_column("#{name}_content_type", file.content_type.to_s.strip)
+            instance.update_column("#{name}_file_size", file.size) if instance.respond_to?("#{name}_file_size")
           else
             true
           end

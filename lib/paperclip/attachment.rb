@@ -104,8 +104,8 @@ module Paperclip
       instance_write(:content_type,    file.content_type.to_s.strip)
       instance_write(:file_size,       file.size)
       instance_write(:fingerprint,     file.fingerprint) if instance_respond_to?(:fingerprint)
-      instance_write(:created_at,      Time.now) if has_enabled_but_unset_created_at?
-      instance_write(:updated_at,      Time.now)
+      instance_write(:created_at,      Time.now) #if has_enabled_but_unset_created_at?
+      #instance_write(:updated_at,      Time.now)
 
       @dirty = true
 
@@ -321,7 +321,7 @@ module Paperclip
       begin
         assign(self)
         save
-        instance.save
+        #instance.save
       rescue Errno::EACCES => e
         warn "#{e} - skipping file."
         false
@@ -352,9 +352,9 @@ module Paperclip
     # instance_write(:file_name, "me.jpg") will write "me.jpg" to the instance's
     # "avatar_file_name" field (assuming the attachment is called avatar).
     def instance_write(attr, value)
-      setter = :"#{name}_#{attr}="
+      setter = :"#{name}_#{attr}"
       if instance.respond_to?(setter)
-        instance.send(setter, value)
+        instance.update_column(setter, value)
       end
     end
 
